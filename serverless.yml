@@ -1,0 +1,31 @@
+service: the-bor-bot
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: us-east-1
+  stage: prod
+
+package:
+  exclude:
+    - index.js
+    - package.json
+    - package-lock.json
+
+functions:
+  theborbot:
+    handler: handler.handle
+    environment:
+      THEBORBOT_MY_BOTCHAT_ID: ${env:THEBORBOT_MY_BOTCHAT_ID}
+      THEBORBOT_TELEGRAM_API: ${env:THEBORBOT_TELEGRAM_API}
+    events:
+      - schedule: 
+          rate: cron(0 13 ? * MON-FRI *)
+          enabled: true
+          input:
+            type: 'cron'
+            job: 'daily-reminder'
+      - http:
+          path: the-bor-bot
+          method: post
+          cors: true
