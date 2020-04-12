@@ -16,11 +16,22 @@ functions:
   theborbot:
     handler: handler.handle
     environment:
-      THEBORBOT_MY_BOTCHAT_ID: ${env:THEBORBOT_MY_BOTCHAT_ID}
       THEBORBOT_TELEGRAM_API: ${env:THEBORBOT_TELEGRAM_API}
+      THEBORBOT_MY_BOTCHAT_ID: ${env:THEBORBOT_MY_BOTCHAT_ID}
+      THEBORBOT_TRELLO_APIKEY: ${env:THEBORBOT_TRELLO_APIKEY}
+      THEBORBOT_TRELLO_TOKEN: ${env:THEBORBOT_TRELLO_TOKEN}
+      THEBORBOT_DOING_LISTID: ${env:THEBORBOT_DOING_LISTID}
+      THEBORBOT_TODO_LISTID: ${env:THEBORBOT_TODO_LISTID}
+      THEBORBOT_TOLEARN_LISTID: ${env:THEBORBOT_TOLEARN_LISTID}
     events:
       - schedule: 
           rate: cron(0 13 ? * MON-FRI *)
+          enabled: true
+          input:
+            type: 'cron'
+            job: 'daily-reminder'
+      - schedule: 
+          rate: cron(0 14 ? * SAT-SUN *)
           enabled: true
           input:
             type: 'cron'
