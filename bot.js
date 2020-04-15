@@ -4,6 +4,7 @@ const {
   CRON_TYPE,
   CHAT_TYPE
 } = require("./constants")
+const WeatherApi = require("./weatherApi").WeatherApi
 const TrelloApi = require("./trelloApi").TrelloApi
 const MessageTemplate = require("./messageTemplate").MessageTemplate
 
@@ -36,6 +37,8 @@ async function handleChat(cmd) {
   switch(cmd.command) {
     case "/start":
       await sendMessage(chatId, `Hello, ${name} 👋`); break
+    case "/test":
+      await morningMessage(botChatId); break
     default:
       await sendMessage(chatId, "Sorry, I don't understand")
   }
@@ -51,24 +54,22 @@ async function sendMessage(chat, message, options = {}) {
 
 async function morningMessage(chatId) {
   let error = false
-  const [currentlyDoing, toDo, toLearn] = await Promise.all([
+  const [weather, currentlyDoing, toDo, toLearn] = await Promise.all([
+    WeatherApi.fetchWeather(),
     TrelloApi.fetchCurrentlyDoing()
-      .then(cards => cards.map(c => c.name))
-      .catch(err => { console.log(err); error = true }),
+      .then(cards => cards.map(c => c.name)),
     TrelloApi.fetchToDo()
-      .then(cards => cards.slice(0, 3).map(c => c.name))
-      .catch(err => { console.log(err); error = true }),
+      .then(cards => cards.slice(0, 3).map(c => c.name)),
     TrelloApi.fetchToLearn()
-      .then(cards => cards.slice(0, 2).map(c => c.name))
-      .catch(err => { console.log(err); error = true }),
-  ])
+      .then(cards => cards.slice(0, 2).map(c => c.name)),
+  ]).catch(err => { console.log(err); error = true })
   
   if (error) {
     return sendMessage(chatId, MessageTemplate.morningError())
   }
   return sendMessage(
     chatId, 
-    MessageTemplate.morning(currentlyDoing, toDo, toLearn),
+    MessageTemplate.morning(weather, currentlyDoing, toDo, toLearn),
     {
       parse_mode: 'Markdown',
       disable_web_page_preview: true,

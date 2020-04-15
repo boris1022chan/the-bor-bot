@@ -2,11 +2,16 @@
 const morningErrorTemplate = () => `
 Good morning ☕!
 
-Failed to fetch your todos today.
+Failed to fetch from APIs today.
 `
 
-const morningTemplate = (doing, todo, tolearn) => `
+const morningTemplate = (weather, doing, todo, tolearn) => `
 Good morning ☕!
+
+*Weather* ${weather.weather_icon}
+${weather.name} has ${weather.weather_desc}
+min: ${weather.temp_min}
+max: ${weather.temp_max}
 
 *Things currently working on*:
 ${doing.map(x => `- ${x}`).join('\n')}

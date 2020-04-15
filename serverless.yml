@@ -16,6 +16,7 @@ functions:
   theborbot:
     handler: handler.handle
     environment:
+      OPEN_WEATHER_API: ${env:OPEN_WEATHER_API}
       THEBORBOT_TELEGRAM_API: ${env:THEBORBOT_TELEGRAM_API}
       THEBORBOT_MY_BOTCHAT_ID: ${env:THEBORBOT_MY_BOTCHAT_ID}
       THEBORBOT_TRELLO_APIKEY: ${env:THEBORBOT_TRELLO_APIKEY}
