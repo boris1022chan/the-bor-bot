@@ -1,15 +1,12 @@
 'use strict';
-const Command = require("./command").Command
-const { FROM_AWS } = require("./constants")
-const { bot } = require('./bot')
+const CommandParser = require("./commands/command-parser").CommandParser
 
 module.exports.handle = async event => {
   try {
-    const cmd = new Command(event, FROM_AWS)
-    await bot(cmd)
+    const cmd = CommandParser.parse(event)
+    await cmd.execute()
   } catch (e) {
-    console.log(event)
-    console.log(e)
+    console.warn(e)
   }
   return { statusCode: 200 }
 };
